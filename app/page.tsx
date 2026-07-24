@@ -164,7 +164,7 @@ export default function Home() {
               학년별 골든벨 퀴즈
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
               
               {/* Card 1: 2학년 골든벨 퀴즈 */}
               <div className="group bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgba(255,216,115,0.2)] border-2 border-[#fff3cc] flex flex-col h-full hover:shadow-[0_12px_40px_rgba(255,216,115,0.4)] transition-all duration-300">
@@ -193,6 +193,21 @@ export default function Home() {
                 <p className="text-gray-500 mb-6 flex-1">3학년 선배들을 위한 심화 퀴즈! 어려운 문제도 척척 풀어보세요.</p>
                 <Link href="/quiz3" className="flex items-center justify-center gap-2 w-full py-4 bg-[#ffb3c6] hover:bg-[#e698ab] text-pink-900 text-lg font-bold rounded-2xl shadow-[0_6px_0_0_#c77d8f] hover:shadow-[0_2px_0_0_#c77d8f] hover:translate-y-1 transition-all active:shadow-none active:translate-y-2">
                   도전하기 <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+
+              {/* Card 3: 골든벨 퀴즈 명예의 전당 */}
+              <div className="group bg-gradient-to-br from-[#16305f] to-[#0a1830] rounded-3xl p-6 shadow-[0_8px_30px_rgba(10,24,48,0.4)] border-2 border-[#16305f] flex flex-col h-full hover:shadow-[0_12px_40px_rgba(232,184,75,0.4)] transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-14 h-14 bg-[#1e4280] rounded-2xl flex items-center justify-center text-2xl shadow-sm group-hover:rotate-12 transition-transform border border-[#e8b84b]/30">
+                    🏆
+                  </div>
+                  <span className="px-3 py-1 bg-yellow-900/50 text-[#ffd873] border border-[#e8b84b]/50 text-sm font-bold rounded-full">전체</span>
+                </div>
+                <h3 className="text-2xl font-bold text-[#ffd873] mb-2 drop-shadow-sm" style={{ fontFamily: '"Jua", sans-serif' }}>명예의 전당</h3>
+                <p className="text-blue-200 mb-6 flex-1 text-sm leading-relaxed">골든벨 퀴즈를 무사히 통과한 자랑스러운 학급과 학생들의 기록을 확인해보세요!</p>
+                <Link href="/hall-of-fame" className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-[#e8b84b] to-[#ffd873] hover:from-[#d4a238] hover:to-[#e8b84b] text-[#5e430c] text-lg font-bold rounded-2xl shadow-[0_6px_0_0_#b88a2a] hover:shadow-[0_2px_0_0_#b88a2a] hover:translate-y-1 transition-all active:shadow-none active:translate-y-2">
+                  기록 보기 <ArrowRight className="w-5 h-5" />
                 </Link>
               </div>
 

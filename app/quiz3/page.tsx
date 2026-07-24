@@ -1,5 +1,6 @@
 "use client";
 
+import { supabase } from '@/lib/supabase';
 import React, { useState, KeyboardEvent } from 'react';
 import './quiz.css';
 
@@ -77,7 +78,12 @@ const SUBJECT_COLOR: Record<string, string> = {
   "과학":"#4f8ce8","도덕":"#e0c24f","기가":"#5fc2a0","수학":"#e85f9e"
 };
 
-export default function GoldenBellQuiz3() {
+export default function QuizPage() {
+  const [selectedClass, setSelectedClass] = useState<string>('');
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isSessionLoading, setIsSessionLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
   const [scores, setScores] = useState<Record<string, number>>({});
   const [solved, setSolved] = useState<Record<string, boolean>>({});
   const [winners, setWinners] = useState<Record<string, string>>({});
@@ -88,6 +94,99 @@ export default function GoldenBellQuiz3() {
   const [flashMsg, setFlashMsg] = useState({ text: '', isError: false });
   
   const [rankModal, setRankModal] = useState<{show: boolean, title: string, tag: string}>({ show: false, title: '', tag: '' });
+
+  // 토스트 메시지 함수
+  const showToast = (msg: string, isError = false) => {
+    setFlashMsg({ text: msg, isError });
+    setTimeout(() => setFlashMsg({ text: '', isError: false }), 3000);
+  };
+
+  const handleClassSelect = async (className: string) => {
+    setSelectedClass(className);
+    setIsSessionLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('quiz_sessions')
+        .select('*')
+        .eq('grade', 3)
+        .eq('class_name', className)
+        .eq('quiz_type', 'golden_bell')
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        if (data.status === 'in_progress') {
+          const proceed = window.confirm('저장된 진행 상황이 있습니다. 이어하시겠습니까?\n취소(Cancel)를 누르면 초기화 후 새로 시작합니다.');
+          if (proceed) {
+            setSessionId(data.id);
+            setScores(data.scores || {});
+            
+            const loadedSolved: Record<string, boolean> = {};
+            const loadedWinners: Record<string, string> = {};
+            const bs = data.board_state || {};
+            for (const key of Object.keys(bs)) {
+               loadedSolved[key] = bs[key].solved;
+               loadedWinners[key] = bs[key].winner;
+            }
+            setSolved(loadedSolved);
+            setWinners(loadedWinners);
+          } else {
+             await resetSession(data.id);
+          }
+        } else {
+          const proceed = window.confirm('이미 종료된 게임입니다. 새로 시작하시겠습니까?');
+          if (proceed) {
+             await resetSession(data.id);
+          } else {
+             setSelectedClass('');
+          }
+        }
+      } else {
+        const { data: newSession, error: insertError } = await supabase
+          .from('quiz_sessions')
+          .insert({
+            grade: 3,
+            class_name: className,
+            quiz_type: 'golden_bell',
+            status: 'in_progress',
+            board_state: {},
+            scores: {}
+          })
+          .select()
+          .single();
+        if (insertError) throw insertError;
+        setSessionId(newSession.id);
+        setScores({});
+        setSolved({});
+        setWinners({});
+      }
+    } catch (e) {
+       console.error(e);
+       alert('데이터를 불러오는데 실패했습니다. 네트워크를 확인해주세요.');
+       setSelectedClass('');
+    } finally {
+       setIsSessionLoading(false);
+    }
+  };
+
+  const resetSession = async (id: string) => {
+     await supabase.from('hall_of_fame').delete().eq('session_id', id);
+     const { error } = await supabase
+        .from('quiz_sessions')
+        .update({
+           status: 'in_progress',
+           board_state: {},
+           scores: {},
+           completed_at: null
+        })
+        .eq('id', id);
+     if (error) throw error;
+     setSessionId(id);
+     setScores({});
+     setSolved({});
+     setWinners({});
+  };
 
   const openQuestion = (subject: string, points: number) => {
     setCurrentCell({ subject, points });
@@ -100,25 +199,107 @@ export default function GoldenBellQuiz3() {
     setCurrentCell(null);
   };
 
-  const handleAward = () => {
+  const handleAward = async () => {
     if (!currentCell) return;
     const name = winnerInput.trim();
     if (!name) {
-      setFlashMsg({ text: '학생 이름을 입력해주세요.', isError: true });
+      showToast('학생 이름을 입력해주세요.', true);
       return;
     }
     
-    setScores(prev => ({ ...prev, [name]: (prev[name] || 0) + currentCell.points }));
+    const newScores = { ...scores, [name]: (scores[name] || 0) + currentCell.points };
     const key = `${currentCell.subject}-${currentCell.points}`;
-    setSolved(prev => ({ ...prev, [key]: true }));
-    setWinners(prev => ({ ...prev, [key]: name }));
+    const newSolved = { ...solved, [key]: true };
+    const newWinners = { ...winners, [key]: name };
     
-    setFlashMsg({ text: `${name} 학생에게 ${currentCell.points}점이 부여되었습니다.`, isError: false });
+    setScores(newScores);
+    setSolved(newSolved);
+    setWinners(newWinners);
     
+    showToast(`${name} 학생에게 ${currentCell.points}점이 부여되었습니다.`);
     setTimeout(closeQuestion, 700);
+
+    if (sessionId) {
+       const boardStateToSave: Record<string, any> = {};
+       for (const k of Object.keys(newSolved)) {
+         boardStateToSave[k] = { solved: true, winner: newWinners[k] };
+       }
+       supabase.from('quiz_sessions').update({
+         board_state: boardStateToSave,
+         scores: newScores
+       }).eq('id', sessionId).then(({ error }) => {
+          if (error) console.error('자동 저장 실패:', error);
+       });
+    }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleManualSave = async () => {
+    if (!sessionId) return;
+    setIsSaving(true);
+    const boardStateToSave: Record<string, any> = {};
+    for (const k of Object.keys(solved)) {
+      boardStateToSave[k] = { solved: true, winner: winners[k] };
+    }
+    const { error } = await supabase.from('quiz_sessions').update({
+      board_state: boardStateToSave,
+      scores: scores
+    }).eq('id', sessionId);
+    setIsSaving(false);
+    
+    if (error) {
+       alert('저장에 실패했습니다.');
+    } else {
+       showToast('✅ 임시저장이 완료되었습니다.');
+    }
+  };
+
+  const handleEndGame = async () => {
+    if (!window.confirm('게임을 완전히 종료하고 명예의 전당에 등록하시겠습니까?\n종료 후에는 더 이상 점수를 수정할 수 없습니다.')) return;
+    
+    setIsSaving(true);
+    try {
+       const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+       const ranks = [];
+       let rank = 1;
+       for (let i=0; i<sorted.length; i++) {
+          if (i > 0 && sorted[i][1] < sorted[i-1][1]) {
+             rank = i + 1;
+          }
+          ranks.push({
+             session_id: sessionId,
+             grade: 3,
+             class_name: selectedClass,
+             quiz_type: 'golden_bell',
+             student_name: sorted[i][0],
+             score: sorted[i][1],
+             rank: rank
+          });
+       }
+
+       if (ranks.length > 0) {
+         const { error: insertError } = await supabase.from('hall_of_fame').insert(ranks);
+         if (insertError) throw insertError;
+       }
+
+       const { error: updateError } = await supabase.from('quiz_sessions').update({
+          status: 'completed',
+          completed_at: new Date().toISOString()
+       }).eq('id', sessionId);
+       
+       if (updateError) throw updateError;
+       
+       alert('명예의 전당에 등록되었습니다!');
+       setSelectedClass('');
+       setSessionId(null);
+    } catch (e) {
+       console.error(e);
+       alert('종료 처리 중 오류가 발생했습니다.');
+    } finally {
+       setIsSaving(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleAward();
     }
@@ -129,6 +310,12 @@ export default function GoldenBellQuiz3() {
     setScores({});
     setSolved({});
     setWinners({});
+    if (sessionId) {
+       supabase.from('quiz_sessions').update({
+         board_state: {},
+         scores: {}
+       }).eq('id', sessionId);
+    }
   };
 
   const openRankModal = (title: string, tagText: string) => {
@@ -138,11 +325,30 @@ export default function GoldenBellQuiz3() {
   const rankEntries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   const medals = ['🥇', '🥈', '🥉'];
 
+  if (!selectedClass) {
+    return (
+      <div className="quiz-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+         <div className="class-selector" style={{ background: '#fff', padding: '40px', borderRadius: '20px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+            <h1 style={{ marginBottom: '10px' }}>3학년 골든벨 퀴즈</h1>
+            <p style={{ marginBottom: '30px', color: '#666' }}>수업을 진행할 반을 선택해주세요.</p>
+            <div className="class-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '15px' }}>
+               {[1,2,3,4,5,6,7,8,9,10].map(c => (
+                 <button key={c} className="btn btn-gold" onClick={() => handleClassSelect(`${c}반`)} disabled={isSessionLoading} style={{ width: '100%', padding: '15px 0' }}>
+                   {c}반
+                 </button>
+               ))}
+            </div>
+            {isSessionLoading && <p style={{ marginTop: '20px', color: '#888' }}>세션 정보를 불러오는 중...</p>}
+         </div>
+      </div>
+    );
+  }
+
   return (
     <div className="quiz-container">
       <div className="title-wrap">
-        <div className="eyebrow">UNNAM MIDDLE SCHOOL</div>
-        <h1>운남중학교 학기말 골든벨</h1>
+        <div className="eyebrow">3ND GRADE FINAL QUIZ - {selectedClass}</div>
+        <h1>3학년 골든벨 퀴즈</h1>
         <div className="sub">과목과 점수를 선택해 문제를 열고, 정답을 맞힌 학생의 이름을 입력하세요.</div>
       </div>
 
@@ -188,14 +394,18 @@ export default function GoldenBellQuiz3() {
           <button className="ctrl-btn" onClick={() => openRankModal('현재 순위 (중간 점검)', 'SCORE CHECK')}>
             👀 점수 확인 (중간 점검)
           </button>
-          <button className="ctrl-btn ctrl-final" onClick={() => openRankModal('최종 순위', 'FINAL RANKING')}>
-            🏆 최종 순위 보기
+          <button className="ctrl-btn" onClick={handleManualSave} disabled={isSaving}>
+            {isSaving ? '저장 중...' : '💾 임시저장'}
+          </button>
+          <button className="ctrl-btn ctrl-final" onClick={handleEndGame} disabled={isSaving}>
+            🏁 게임 완전히 종료
           </button>
         </div>
       </div>
 
-      <div className="reset-row">
-        <button onClick={handleReset}>전체 초기화 (문제 상태 &amp; 점수 모두 리셋)</button>
+      <div className="reset-row" style={{ marginTop: '1rem' }}>
+        <button onClick={handleReset}>보드 전체 초기화</button>
+        <button onClick={() => setSelectedClass('')} style={{ marginLeft: '10px' }}>다른 반 선택하기</button>
       </div>
 
       {/* 문제 모달 */}
@@ -236,12 +446,14 @@ export default function GoldenBellQuiz3() {
               </datalist>
               <button className="btn btn-ghost" onClick={handleAward}>점수 부여</button>
             </div>
-            <div className="flash-msg" style={{ color: flashMsg.isError ? '#ff9c9c' : '#7fe3a0' }}>
-              {flashMsg.text}
-            </div>
+            
           </div>
         </div>
       )}
+
+      <div className="flash-msg" style={{ color: flashMsg.isError ? '#ff9c9c' : '#7fe3a0', position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.8)', padding: '10px 20px', borderRadius: '20px', zIndex: 1000, opacity: flashMsg.text ? 1 : 0, transition: 'opacity 0.3s', pointerEvents: 'none' }}>
+         {flashMsg.text}
+      </div>
 
       {/* 순위 모달 */}
       {rankModal.show && (
