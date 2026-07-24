@@ -69,6 +69,10 @@ export default function Home() {
               2학년 골든벨 퀴즈
               <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <Link href="/quiz3" className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-[#ffb3c6] hover:bg-[#e698ab] text-gray-700 text-xl rounded-full shadow-[0_8px_0_0_#c77d8f] hover:shadow-[0_4px_0_0_#c77d8f] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
+              3학년 골든벨 퀴즈
+              <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
           
         </div>
