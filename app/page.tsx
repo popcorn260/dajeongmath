@@ -1,4 +1,5 @@
 import { Sparkles, ArrowRight, Heart } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -59,10 +60,16 @@ export default function Home() {
             [기능 추가를 위한 가짜 버튼]
             젤리처럼 통통 튀는 hover 애니메이션이 적용되어 있습니다. 
           */}
-          <button className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-[#b2dfdb] hover:bg-[#a1cdc9] text-gray-700 text-xl rounded-full shadow-[0_8px_0_0_#80cbc4] hover:shadow-[0_4px_0_0_#80cbc4] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
-            시작하기
-            <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-[#b2dfdb] hover:bg-[#a1cdc9] text-gray-700 text-xl rounded-full shadow-[0_8px_0_0_#80cbc4] hover:shadow-[0_4px_0_0_#80cbc4] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
+              시작하기
+              <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <Link href="/quiz" className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-[#ffd873] hover:bg-[#e8b84b] text-gray-700 text-xl rounded-full shadow-[0_8px_0_0_#d4a238] hover:shadow-[0_4px_0_0_#d4a238] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
+              2학년 골든벨 퀴즈
+              <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
           
         </div>
       </main>
