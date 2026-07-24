@@ -77,6 +77,10 @@ export default function Home() {
               구구단 콩콩 게임
               <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <Link href="/equation" className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-[#fdeedd] hover:bg-[#ebd5bd] text-gray-700 text-xl rounded-full shadow-[0_8px_0_0_#c96f2a] hover:shadow-[0_4px_0_0_#c96f2a] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
+              일차방정식 연습
+              <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
           
         </div>

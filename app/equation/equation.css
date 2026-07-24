@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.eq-container {
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fdeedd 0%, #fff8ef 100%);
+  font-family: -apple-system, "Segoe UI", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.eq-container * {
+  box-sizing: border-box;
+}
+
+.eq-container .mvar {
+  font-family: 'STIX Two Text', 'Cambria Math', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 600;
+}
+.eq-container .equation,
+.eq-container .ansvar,
+.eq-container .frac .num,
+.eq-container .frac .denom,
+.eq-container .reveal {
+  font-family: 'STIX Two Text', 'Cambria Math', 'Times New Roman', serif;
+}
+.eq-container .frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0 0.1em;
+  line-height: 1;
+  font-size: 0.55em;
+  position: relative;
+  top: 0.05em;
+}
+.eq-container .frac .num, .eq-container .frac .denom { padding: 0 0.18em; }
+.eq-container .frac .num { border-bottom: 0.08em solid currentColor; padding-bottom: 0.08em; }
+.eq-container .frac .denom { padding-top: 0.08em; }
+
+.eq-container .fullscreen-btn {
+  position: absolute;
+  top: 3vh;
+  right: 3vw;
+  font-size: clamp(14px, 1.4vw, 22px);
+  font-weight: 600;
+  padding: 0.6em 1.2em;
+  border: none;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #c96f2a;
+  box-shadow: 0 4px 16px rgba(140,90,40,0.15);
+  cursor: pointer;
+  z-index: 10;
+}
+.eq-container .wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2vh 3vw;
+}
+.eq-container h1 {
+  text-align: center;
+  font-size: clamp(24px, 3.2vw, 52px);
+  color: #6b3c12;
+  margin: 0 0 0.3vh;
+  font-weight: 800;
+}
+.eq-container .sub {
+  text-align: center;
+  color: #a97a4e;
+  font-size: clamp(13px, 1.5vw, 24px);
+  margin-bottom: 1.8vh;
+}
+.eq-container .stats {
+  display: flex;
+  justify-content: center;
+  gap: clamp(20px, 4vw, 80px);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: clamp(8px, 1.2vh, 20px) clamp(20px, 3vw, 50px);
+  margin-bottom: 2vh;
+  box-shadow: 0 4px 20px rgba(140,90,40,0.1);
+}
+.eq-container .stat { text-align: center; }
+.eq-container .stat .num { font-size: clamp(20px, 2.8vw, 44px); font-weight: 800; color: #5c3a1a; line-height: 1.1; }
+.eq-container .stat .label { font-size: clamp(11px, 1.1vw, 18px); color: #c09a6e; margin-top: 0.2vh; }
+
+.eq-container .card {
+  width: min(94vw, 1400px);
+  background: #ffffff;
+  border-radius: 28px;
+  padding: clamp(22px, 3.4vh, 56px) clamp(20px, 5vw, 80px);
+  box-shadow: 0 12px 40px rgba(140,90,40,0.16);
+  text-align: center;
+  position: relative;
+}
+.eq-container .badge {
+  display: inline-block;
+  font-size: clamp(13px, 1.5vw, 24px);
+  padding: 0.4em 1.1em;
+  border-radius: 999px;
+  background: #fbeeda;
+  color: #c96f2a;
+  font-weight: 700;
+  margin-bottom: clamp(10px, 1.8vh, 22px);
+}
+.eq-container .equation {
+  font-size: clamp(44px, 8vw, 140px);
+  font-weight: 800;
+  color: #2e2013;
+  margin-bottom: clamp(16px, 2.6vh, 40px);
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+.eq-container .equation sup { font-size: 0.5em; }
+
+/* ---------- answer input ---------- */
+.eq-container .answer-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 30px);
+  margin-bottom: clamp(6px, 1.2vh, 14px);
+  flex-wrap: wrap;
+}
+.eq-container .xprefix {
+  font-size: clamp(34px, 5vw, 88px);
+  font-weight: 800;
+  color: #2e2013;
+  font-family: 'STIX Two Text', 'Cambria Math', 'Times New Roman', serif;
+}
+.eq-container .xprefix .mvar { font-weight: 700; }
+.eq-container .ans-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+.eq-container .ans-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(4px, 0.8vh, 10px) clamp(6px, 1vw, 16px);
+}
+.eq-container .ans-bar {
+  width: 100%;
+  height: clamp(3px, 0.4vh, 5px);
+  background: #2e2013;
+  border-radius: 3px;
+  margin: 2px 0;
+}
+.eq-container .ans-frac.no-den .ans-bar,
+.eq-container .ans-frac.no-den .ans-row.den { display: none; }
+
+.eq-container input.coef {
+  width: clamp(120px, 16vw, 300px);
+  font-size: clamp(30px, 4.5vw, 80px);
+  padding: 0.12em 0.2em;
+  border: 4px solid #f0dcc2;
+  border-radius: 14px;
+  text-align: center;
+  outline: none;
+  font-weight: 700;
+  color: #2e2013;
+  transition: border-color 0.15s;
+  font-family: 'STIX Two Text', 'Cambria Math', 'Times New Roman', serif;
+}
+.eq-container input.coef:focus { border-color: #d98a3a; }
+.eq-container input.coef::placeholder { color: #e3c9a5; font-weight: 500; }
+
+.eq-container .btn-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1vh, 12px);
+  align-items: stretch;
+}
+.eq-container button.submit-btn {
+  font-size: clamp(20px, 2.6vw, 44px);
+  font-weight: 700;
+  padding: 0.35em 0.9em;
+  border: none;
+  border-radius: 14px;
+  background: #c96f2a;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.eq-container button.submit-btn:hover { background: #b05e1f; }
+.eq-container button.frac-toggle {
+  font-size: clamp(13px, 1.4vw, 22px);
+  font-weight: 700;
+  padding: 0.4em 0.8em;
+  border: 2px solid #f0dcc2;
+  border-radius: 10px;
+  background: #fff8ef;
+  color: #c96f2a;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.eq-container button.frac-toggle.on {
+  background: #c96f2a;
+  color: #fff;
+  border-color: #c96f2a;
+}
+
+.eq-container .shake { animation: shake 0.35s; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-12px); }
+  40% { transform: translateX(12px); }
+  60% { transform: translateX(-9px); }
+  80% { transform: translateX(9px); }
+}
+
+.eq-container .feedback {
+  height: clamp(70px, 11vh, 170px);
+  margin-top: clamp(6px, 1.2vh, 14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2vw, 40px);
+}
+.eq-container .mark {
+  font-size: clamp(56px, 10vw, 180px);
+  font-weight: 900;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.18s, transform 0.18s;
+}
+.eq-container .mark.show { opacity: 1; transform: scale(1); }
+.eq-container .mark.correct { color: #2fa66a; }
+.eq-container .mark.wrong { color: #e0526a; }
+.eq-container .msg {
+  font-size: clamp(16px, 2vw, 34px);
+  font-weight: 700;
+  color: #d98a2b;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.eq-container .msg.show { opacity: 1; }
+.eq-container .reveal {
+  font-size: clamp(28px, 4.5vw, 80px);
+  font-weight: 800;
+  color: #8a5a9e;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.eq-container .reveal.show { opacity: 1; }
+
+.eq-container .hint {
+  font-size: clamp(12px, 1.3vw, 21px);
+  color: #bd9a6f;
+  margin-top: clamp(4px, 1vh, 10px);
+  line-height: 1.5;
+}
+.eq-container .skip-btn {
+  position: absolute;
+  bottom: clamp(12px, 2vh, 24px);
+  right: clamp(14px, 2vw, 30px);
+  font-size: clamp(12px, 1.3vw, 20px);
+  font-weight: 600;
+  padding: 0.4em 0.9em;
+  border: none;
+  border-radius: 999px;
+  background: #f6efe5;
+  color: #bd9a6f;
+  cursor: pointer;
+}
+.eq-container .skip-btn:hover { background: #eee1cf; color: #a97a4e; }
+
+.eq-container.flash-correct { background: #dff5e8; }
+.eq-container.flash-wrong { background: #fbe1e5; }
