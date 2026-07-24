@@ -81,6 +81,14 @@ export default function Home() {
               일차방정식 연습
               <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <Link href="/linear-function" className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-[#fffdf8] hover:bg-[#fffaf1] border-2 border-[#e6c491] text-gray-700 text-xl rounded-full shadow-[0_8px_0_0_#c98a4b] hover:shadow-[0_4px_0_0_#c98a4b] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
+              일차함수 대입 게임
+              <ArrowRight className="w-6 h-6 text-gray-600 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link href="/leaderboard" className="group relative flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-100 to-indigo-100 hover:from-blue-200 hover:to-indigo-200 text-indigo-900 text-xl rounded-full shadow-[0_8px_0_0_#818cf8] hover:shadow-[0_4px_0_0_#818cf8] hover:translate-y-1 transition-all duration-200 active:shadow-none active:translate-y-2">
+              🏆 명예의 전당
+              <ArrowRight className="w-6 h-6 text-indigo-700 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
           
         </div>
