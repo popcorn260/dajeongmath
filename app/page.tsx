@@ -140,6 +140,18 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Card 4: AI 다정쌤에게 질문하기 */}
+              <div className="group bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgba(255,182,193,0.3)] border-2 border-[#ffe0e8] hover:-translate-y-2 transition-all duration-300 flex flex-col h-full lg:col-span-3 xl:col-span-1">
+                <div className="w-16 h-16 bg-[#ffe0e8] rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                  🤖
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: '"Jua", sans-serif' }}>AI 다정쌤에게 질문하기</h3>
+                <p className="text-gray-500 mb-6 flex-1">모르는 문제가 있나요? 인공지능 다정쌤이 언제든 친절하게 알려줄게요!</p>
+                <Link href="/chat" className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white text-lg font-bold rounded-2xl shadow-[0_6px_0_0_#d81b60] hover:shadow-[0_2px_0_0_#d81b60] hover:translate-y-1 transition-all active:shadow-none active:translate-y-2">
+                  <Sparkles className="w-5 h-5" /> 대화 시작하기
+                </Link>
+              </div>
+
             </div>
           </div>
 
